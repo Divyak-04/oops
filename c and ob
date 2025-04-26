@@ -1,0 +1,33 @@
+//created class and object and consturctor and a method to display
+
+import java.util.*;
+class student{
+    String name;
+    int roll;
+    
+    student(String n,int r){
+        name=n;
+        roll=r;
+    }
+    void display(){
+        System.out.print("name "+name);
+        System.out.print("roll "+roll);
+    }
+}
+class Main{
+    public static void main(String[] args){
+        Scanner n=new Scanner(System.in);
+        
+        int s=n.nextInt();
+        
+        student[] students=new student[s];
+        int i;
+        for(i=0;i<s;i++){
+            String name=n.next();
+            int roll=n.nextInt();
+            students[i]=new student(name,roll);
+            students[i].display();
+        }
+        
+    }
+}
