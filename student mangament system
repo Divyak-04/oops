@@ -1,0 +1,64 @@
+class student{
+    private String name;
+    private int id;
+    private String course;
+    
+    student(String name,int id,String course){
+        this.name=name;
+        this.id=id;
+        this.course=course;
+    }
+     public String getname(){
+        return name;
+    }
+    public int getid(){
+        return id;
+    }
+    public String getcourse(){
+        return course;
+    }
+    
+    public void display(){
+        System.out.println("name "+name);
+        System.out.println("id "+id);
+        System.out.println("course "+course);
+        
+    }
+    public void fee(){
+        System.out.println("fee is 20000");
+    }
+    
+}
+class Regstudent extends student{
+    public Regstudent(String name,int id,String course){
+        super(name,id,course);
+    }
+    @Override
+    public void fee(){
+        System.out.println("fee is 15000");
+    }
+    
+    
+}
+class onlinestudent extends student{
+    public onlinestudent(String name,int id,String course){
+        super(name,id,course);
+    }
+    @Override
+    public void fee(){
+        System.out.println("fee is 20000");
+    }
+}
+
+public class Main{
+    public static void main(String[] args){
+        student s1=new Regstudent("divya",101,"cse");
+        student s2=new onlinestudent("div",102,"it");
+        
+        s1.display();
+        s1.fee();
+        
+        s2.display();
+        s2.fee();
+    }
+}
