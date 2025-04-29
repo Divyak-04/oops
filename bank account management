@@ -1,0 +1,171 @@
+import java.util.*;
+
+class Account{
+    protected String actnum;
+    protected String actname;
+    protected double balance;
+
+    public Account(String actnum,String actname,double balance){
+        this.actnum=actnum;
+        this.actname=actname;
+        this.balance=balance;
+    }
+    public void deposit(double amount){
+        balance+=amount;
+        System.out.println("deposited rupees: "+amount);
+    }
+    public void disbalance(){
+        System.out.println("balance :"+balance);
+    }
+    public void withdraw(double amount){
+        if(amount<=balance){
+            balance-=amount;
+            System.out.println("withdrawn :"+amount);
+        }
+        else{
+            System.out.println("Insufficient balance");
+        }
+    }
+
+}
+class Savings extends Account{
+    private double interestrate;
+
+    public Savings(String actnum, String actname, double balance, double interestrate){
+        super(actnum,actname,balance);
+        this.interestrate=interestrate;
+    }
+    public void addinterest(){
+        double interest=balance*interestrate/100;
+        balance+=interest;
+        System.out.print("interest :"+interest);
+    }
+
+
+
+}
+class FixedDepositAccount extends Account {
+    private int termInMonths;
+    private double interestRate;
+
+    public FixedDepositAccount(String accountNumber, String accountHolderName, double balance, int termInMonths, double interestRate) {
+        super(accountNumber, accountHolderName, balance);
+        this.termInMonths = termInMonths;
+        this.interestRate = interestRate;
+    }
+
+    public void calculateMaturityAmount() {
+        double maturityAmount = balance + (balance * interestRate * termInMonths / 1200);
+        System.out.println("Maturity Amount after " + termInMonths + " months: ₹" + maturityAmount);
+    }
+
+    @Override
+    public void withdraw(double amount) {
+        System.out.println("Withdrawal not allowed before maturity!");
+    }
+}
+class RecurringDepositAccount extends Account {
+    private double monthlyDeposit;
+    private int termInMonths;
+    private double interestRate;
+
+    public RecurringDepositAccount(String accountNumber, String accountHolderName, double monthlyDeposit, int termInMonths, double interestRate) {
+        super(accountNumber, accountHolderName, 0); // Balance is built over time
+        this.monthlyDeposit = monthlyDeposit;
+        this.termInMonths = termInMonths;
+        this.interestRate = interestRate;
+    }
+
+    public void calculateMaturityAmount() {
+        double totalDeposits = monthlyDeposit * termInMonths;
+        double maturityAmount = totalDeposits + (totalDeposits * interestRate * termInMonths / 1200);
+        System.out.println("Maturity Amount: ₹" + maturityAmount);
+
+    }
+
+    public void depositMonthlyInstallment() {
+        balance += monthlyDeposit;
+        System.out.println("Monthly Deposit: ₹" + monthlyDeposit);
+
+
+    }
+
+    @Override
+    public void withdraw(double amount) {
+        System.out.println("Withdrawals not allowed in RD account before maturity.");
+    }
+}
+
+
+
+
+
+public class Bank {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        Account account = null;
+
+        System.out.println("Choose Account Type:");
+        System.out.println("1. Savings Account");
+        System.out.println("2. Fixed Deposit Account");
+        System.out.println("3. Recurring Deposit Account");
+        System.out.print("Enter your choice: ");
+        int choice = sc.nextInt();
+        sc.nextLine(); // clear buffer
+
+        System.out.print("Enter Account Number: ");
+        String accNo = sc.nextLine();
+
+        System.out.print("Enter Account Holder Name: ");
+        String name = sc.nextLine();
+
+        switch (choice) {
+            case 1:
+                System.out.print("Enter Initial Balance: ");
+                double sbal = sc.nextDouble();
+                System.out.print("Enter Interest Rate (%): ");
+                double sint = sc.nextDouble();
+                account = new Savings(accNo, name, sbal, sint);
+                break;
+
+            case 2:
+                System.out.print("Enter Deposit Amount: ");
+                double fdBal = sc.nextDouble();
+                System.out.print("Enter Term in Months: ");
+                int fdTerm = sc.nextInt();
+                System.out.print("Enter Interest Rate (%): ");
+                double fdRate = sc.nextDouble();
+                account = new FixedDepositAccount(accNo, name, fdBal, fdTerm, fdRate);
+                break;
+
+            case 3:
+                System.out.print("Enter Monthly Deposit: ");
+                double rdDeposit = sc.nextDouble();
+                System.out.print("Enter Term in Months: ");
+                int rdTerm = sc.nextInt();
+                System.out.print("Enter Interest Rate (%): ");
+                double rdRate = sc.nextDouble();
+                account = new RecurringDepositAccount(accNo, name, rdDeposit, rdTerm, rdRate);
+                break;
+
+            default:
+                System.out.println("Invalid choice!");
+                return;
+        }
+
+        // Display balance
+        account.disbalance();
+
+        // Perform account-specific actions
+        if (account instanceof Savings) {
+            ((Savings) account).addinterest();
+        } else if (account instanceof FixedDepositAccount) {
+            ((FixedDepositAccount) account).calculateMaturityAmount();
+        } else if (account instanceof RecurringDepositAccount) {
+            ((RecurringDepositAccount) account).depositMonthlyInstallment();
+            ((RecurringDepositAccount) account).calculateMaturityAmount();
+        }
+
+        sc.close();
+    }
+}
