@@ -1,0 +1,82 @@
+import java.util.*;
+import java.util.function.DoubleUnaryOperator;
+
+class Account1{
+    protected String actname;
+    protected String actnum;
+    protected double balance;
+
+    public Account1(String actname,String actnum,double balance){
+        this.actname=actname;
+        this.actnum=actnum;
+        this.balance=balance;
+    }
+
+    public void deposit(double amount){
+        balance+=amount;
+        System.out.println("balance amount :"+balance);
+    }
+    public void withdraw(double amount){
+        if(amount <=balance){
+            balance-=amount;
+            System.out.println("Withdrawn amount :"+amount);
+        }
+    }
+    public void displayact(){
+        System.out.println(balance);
+    }
+
+}
+
+class Savings1 extends Account1{
+    double interestrate;
+
+    public Savings1(String actname,String actnum,double balance,double interestrate){
+        super(actname,actnum,balance);
+        this.interestrate=interestrate;
+    }
+
+    public void addinterest(){
+        double interest=balance*interestrate/100;
+        System.out.println("Interest is :"+interest);
+    }
+
+}
+
+
+
+public class Trybank {
+    public static void main(String[] args) {
+        Scanner n = new Scanner(System.in);
+        Account1 account = null;
+
+
+        System.out.print("enter the choice :");
+        int choice = n.nextInt();
+        n.nextLine();
+
+        String actname = n.nextLine();
+        String actnum = n.nextLine();
+
+
+        switch (choice){
+            case 1:
+                Double balance = n.nextDouble();
+                Double interest = n.nextDouble();
+
+                account = new Savings1(actname, actnum, balance, interest);
+                break;
+
+            default:
+                System.out.println("invalid");
+                return;
+        }
+
+        account.displayact();
+
+        if (account instanceof Savings1) {
+            ((Savings1) account).addinterest(); // Downcasting
+        }
+
+    }
+}
