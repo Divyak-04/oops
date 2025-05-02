@@ -1,0 +1,78 @@
+// Base class
+class Person {
+    String name;
+    int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    void displayInfo() {
+        System.out.println("Name: " + name + ", Age: " + age);
+    }
+}
+
+// Subclass
+class Member extends Person {
+    int memberId;
+
+    public Member(String name, int age, int memberId) {
+        super(name, age); // Call parent constructor
+        this.memberId = memberId;
+    }
+
+    @Override
+    void displayInfo() {
+        super.displayInfo();
+        System.out.println("Member ID: " + memberId);
+    }
+}
+
+// Book class
+class Book {
+    String title;
+    String author;
+    boolean isAvailable;
+
+    public Book(String title, String author) {
+        this.title = title;
+        this.author = author;
+        this.isAvailable = true; // Book is available by default
+    }
+
+    void borrowBook() {
+        if (isAvailable) {
+            isAvailable = false;
+            System.out.println(title + " has been borrowed.");
+        } else {
+            System.out.println(title + " is not available.");
+        }
+    }
+
+    void returnBook() {
+        isAvailable = true;
+        System.out.println(title + " has been returned.");
+    }
+
+    void showBookInfo() {
+        System.out.println("Title: " + title + ", Author: " + author + ", Available: " + isAvailable);
+    }
+}
+
+// Main class
+public class LibraryApp {
+    public static void main(String[] args) {
+        Member m1 = new Member("Divya", 20, 101);
+        m1.displayInfo();
+
+        Book b1 = new Book("Wings of Fire", "A.P.J. Abdul Kalam");
+        b1.showBookInfo();
+
+        b1.borrowBook();
+        b1.borrowBook(); // Trying again
+
+        b1.returnBook();
+        b1.showBookInfo();
+    }
+}
