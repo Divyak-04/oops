@@ -1,0 +1,188 @@
+// Interface for salary calculation
+interface Payable {
+    double calculateSalary();
+}
+
+// Abstract class for Person
+abstract class Person {
+    protected String name;
+    protected int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public abstract String getRole();
+
+    public void displayDetails() {
+        System.out.println("Name: " + name + ", Age: " + age);
+    }
+}
+
+// Profile class (Composition with Student)
+class Profile {
+    private String email;
+    private String phone;
+
+    public Profile(String email, String phone) {
+        this.email = email;
+        this.phone = phone;
+    }
+
+    public void displayProfile() {
+        System.out.println("Email: " + email + ", Phone: " + phone);
+    }
+}
+
+// Student class extending Person
+class Student extends Person {
+    private static int studentCount = 0;
+    private int studentId;
+    private Profile profile;
+
+    public Student(String name, int age, String email, String phone) {
+        super(name, age);
+        this.studentId = ++studentCount;
+        this.profile = new Profile(email, phone);
+    }
+
+    @Override
+    public String getRole() {
+        return "Student";
+    }
+
+    @Override
+    public void displayDetails() {
+        super.displayDetails();
+        System.out.println("Student ID: " + studentId + ", Role: " + getRole());
+        profile.displayProfile();
+    }
+}
+
+// Teacher class
+class Teacher extends Person implements Payable {
+    private static int teacherCount = 0;
+    private int teacherId;
+    private double baseSalary;
+
+    public Teacher(String name, int age, double baseSalary) {
+        super(name, age);
+        this.teacherId = ++teacherCount;
+        this.baseSalary = baseSalary;
+    }
+
+    @Override
+    public String getRole() {
+        return "Teacher";
+    }
+
+    @Override
+    public double calculateSalary() {
+        return baseSalary + 2000; // bonus
+    }
+
+    @Override
+    public void displayDetails() {
+        super.displayDetails();
+        System.out.println("Teacher ID: " + teacherId + ", Role: " + getRole());
+        System.out.println("Salary: ₹" + calculateSalary());
+    }
+}
+
+// Course class
+class Course {
+    private static int courseCount = 0;
+    private int courseId;
+    private String courseName;
+    private Teacher assignedTeacher;
+
+    public Course(String courseName) {
+        this.courseName = courseName;
+        this.courseId = ++courseCount;
+    }
+
+    public void assignTeacher(Teacher t) {
+        this.assignedTeacher = t;
+    }
+
+    public void displayCourse() {
+        System.out.println("Course ID: " + courseId + ", Course Name: " + courseName);
+        if (assignedTeacher != null) {
+            System.out.print("Assigned Teacher: ");
+            assignedTeacher.displayDetails();
+        } else {
+            System.out.println("No teacher assigned yet.");
+        }
+    }
+}
+
+// Department class (Aggregation)
+class Department {
+    private String deptName;
+    private Teacher[] teachers;
+    private Course[] courses;
+    private int teacherIndex = 0;
+    private int courseIndex = 0;
+
+    public Department(String name, int maxTeachers, int maxCourses) {
+        this.deptName = name;
+        teachers = new Teacher[maxTeachers];
+        courses = new Course[maxCourses];
+    }
+
+    public void addTeacher(Teacher t) {
+        if (teacherIndex < teachers.length)
+            teachers[teacherIndex++] = t;
+    }
+
+    public void addCourse(Course c) {
+        if (courseIndex < courses.length)
+            courses[courseIndex++] = c;
+    }
+
+    public void showDepartmentDetails() {
+        System.out.println("\n--- Department: " + deptName + " ---");
+        System.out.println("Teachers:");
+        for (int i = 0; i < teacherIndex; i++)
+            teachers[i].displayDetails();
+        System.out.println("Courses:");
+        for (int i = 0; i < courseIndex; i++)
+            courses[i].displayCourse();
+    }
+}
+
+// Main class to run the system
+public class SchoolManagementSystem {
+    public static void main(String[] args) {
+        // Creating Students
+        Student s1 = new Student("Alice", 18, "alice@example.com", "1234567890");
+        Student s2 = new Student("Bob", 19, "bob@example.com", "9876543210");
+
+        // Creating Teachers
+        Teacher t1 = new Teacher("Dr. Smith", 45, 50000);
+        Teacher t2 = new Teacher("Ms. Clara", 35, 48000);
+
+        // Creating Courses
+        Course c1 = new Course("Mathematics");
+        Course c2 = new Course("Physics");
+
+        // Assigning Teachers to Courses
+        c1.assignTeacher(t1);
+        c2.assignTeacher(t2);
+
+        // Creating Department
+        Department d1 = new Department("Science", 5, 5);
+        d1.addTeacher(t1);
+        d1.addTeacher(t2);
+        d1.addCourse(c1);
+        d1.addCourse(c2);
+
+        // Display all data
+        System.out.println("\n--- Student Details ---");
+        s1.displayDetails();
+        s2.displayDetails();
+
+        d1.showDepartmentDetails();
+    }
+}
