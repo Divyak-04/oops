@@ -1,0 +1,188 @@
+// Interface for billing
+interface Billable {
+    double generateBill();
+}
+
+// Abstract Person class
+abstract class Person {
+    protected String name;
+    protected int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public abstract String getRole();
+
+    public void displayDetails() {
+        System.out.println("Name: " + name + ", Age: " + age);
+    }
+}
+
+// Composition: Contact class
+class Contact {
+    private String email;
+    private String phone;
+
+    public Contact(String email, String phone) {
+        this.email = email;
+        this.phone = phone;
+    }
+
+    public void displayContact() {
+        System.out.println("Email: " + email + ", Phone: " + phone);
+    }
+}
+
+// Patient class
+class Patient extends Person {
+    private static int patientCount = 0;
+    private int patientId;
+    private Contact contact;
+
+    public Patient(String name, int age, String email, String phone) {
+        super(name, age);
+        this.patientId = ++patientCount;
+        this.contact = new Contact(email, phone);
+    }
+
+    @Override
+    public String getRole() {
+        return "Patient";
+    }
+
+    @Override
+    public void displayDetails() {
+        super.displayDetails();
+        System.out.println("Patient ID: " + patientId + ", Role: " + getRole());
+        contact.displayContact();
+    }
+}
+
+// Doctor class
+class Doctor extends Person implements Billable {
+    private static int doctorCount = 0;
+    private int doctorId;
+    private double consultationFee;
+
+    public Doctor(String name, int age, double fee) {
+        super(name, age);
+        this.doctorId = ++doctorCount;
+        this.consultationFee = fee;
+    }
+
+    @Override
+    public String getRole() {
+        return "Doctor";
+    }
+
+    @Override
+    public double generateBill() {
+        return consultationFee + 1000; // e.g., includes service charges
+    }
+
+    @Override
+    public void displayDetails() {
+        super.displayDetails();
+        System.out.println("Doctor ID: " + doctorId + ", Role: " + getRole());
+        System.out.println("Total Fee: ₹" + generateBill());
+    }
+}
+
+// Room class
+class Room {
+    private static int roomCount = 0;
+    private int roomId;
+    private String roomType;
+    private Patient assignedPatient;
+
+    public Room(String type) {
+        this.roomType = type;
+        this.roomId = ++roomCount;
+    }
+
+    public void assignPatient(Patient p) {
+        this.assignedPatient = p;
+    }
+
+    public void displayRoom() {
+        System.out.println("Room ID: " + roomId + ", Type: " + roomType);
+        if (assignedPatient != null) {
+            System.out.print("Assigned Patient: ");
+            assignedPatient.displayDetails();
+        } else {
+            System.out.println("No patient assigned yet.");
+        }
+    }
+}
+
+// Department class (Aggregation)
+class Department {
+    private String deptName;
+    private Doctor[] doctors;
+    private Room[] rooms;
+    private int docIndex = 0;
+    private int roomIndex = 0;
+
+    public Department(String name, int maxDoctors, int maxRooms) {
+        this.deptName = name;
+        doctors = new Doctor[maxDoctors];
+        rooms = new Room[maxRooms];
+    }
+
+    public void addDoctor(Doctor d) {
+        if (docIndex < doctors.length)
+            doctors[docIndex++] = d;
+    }
+
+    public void addRoom(Room r) {
+        if (roomIndex < rooms.length)
+            rooms[roomIndex++] = r;
+    }
+
+    public void showDepartmentDetails() {
+        System.out.println("\n--- Department: " + deptName + " ---");
+        System.out.println("Doctors:");
+        for (int i = 0; i < docIndex; i++)
+            doctors[i].displayDetails();
+        System.out.println("Rooms:");
+        for (int i = 0; i < roomIndex; i++)
+            rooms[i].displayRoom();
+    }
+}
+
+// Main class
+public class HospitalManagementSystem {
+    public static void main(String[] args) {
+        // Creating Patients
+        Patient p1 = new Patient("Ravi", 30, "ravi@mail.com", "9876543210");
+        Patient p2 = new Patient("Meena", 25, "meena@mail.com", "8765432109");
+
+        // Creating Doctors
+        Doctor d1 = new Doctor("Dr. Ramesh", 50, 3000);
+        Doctor d2 = new Doctor("Dr. Kavya", 40, 3500);
+
+        // Creating Rooms
+        Room r1 = new Room("General");
+        Room r2 = new Room("Private");
+
+        // Assigning patients to rooms
+        r1.assignPatient(p1);
+        r2.assignPatient(p2);
+
+        // Creating Department
+        Department dept = new Department("Cardiology", 5, 5);
+        dept.addDoctor(d1);
+        dept.addDoctor(d2);
+        dept.addRoom(r1);
+        dept.addRoom(r2);
+
+        // Display all
+        System.out.println("\n--- Patient Details ---");
+        p1.displayDetails();
+        p2.displayDetails();
+
+        dept.showDepartmentDetails();
+    }
+}
