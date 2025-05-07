@@ -1,0 +1,33 @@
+class Food {
+    String taste;
+
+    public Food(String taste) {
+        this.taste = taste;
+    }
+
+    void display() {
+        System.out.println("Food has many tastes like: " + taste);
+    }
+}
+
+class Sweet extends Food {
+    public Sweet(String taste) {
+        super(taste); // Calling parent constructor
+    }
+
+    // Overriding display method
+    @Override
+    void display() {
+        System.out.println("Sweet taste: " + taste);
+    }
+}
+
+public class FoodType {
+    public static void main(String[] args) {
+        Food f = new Food("spicy, sour");
+        f.display(); // Output: Food has many tastes like: spicy, sour
+
+        Sweet s = new Sweet("sweet");
+        s.display(); // Output: Sweet taste: sweet
+    }
+}
