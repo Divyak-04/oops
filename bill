@@ -1,0 +1,50 @@
+class User{
+    String username;
+    String address;
+    int mobile;
+
+    public User(String username,String address,int mobile){
+        this.username=username;
+        this.address=address;
+        this.mobile=mobile;
+    }
+
+
+
+
+}
+class Product extends User{
+    String prodname;
+    int prodprice;
+
+    public Product(String username,String address,int mobile,String prodname,int prodprice){
+        super(username, address, mobile);
+        this.prodname=prodname;
+        this.prodprice=prodprice;
+    }
+
+    void displaybill(){
+        System.out.println("product bill:");
+        System.out.println("username: " +username);
+        System.out.println("address: " +address);
+        System.out.println("mobile: " +mobile);
+        System.out.println("prodname: " +prodname);
+        System.out.println("prodprice: " +prodprice);
+
+
+    }
+
+}
+
+
+
+
+
+public class Order {
+
+    public static void main(String[] args){
+        Product bill=new Product("divya","xyz",123,"tv",1200);
+        bill.displaybill();
+
+    }
+}
